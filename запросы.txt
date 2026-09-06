@@ -1,0 +1,26 @@
+1.	Нормальные запросы
+curl -s "http://localhost/search?q=python" > /dev/null
+curl -s "http://localhost/product?id=12345" > /dev/null
+curl -s "http://localhost/user/profile?username=john" > /dev/null
+
+2.	SQL-инъекции
+curl -s "http://localhost/login?user=admin'--" > /dev/null
+curl -s "http://localhost/product?id=1%20UNION%20SELECT%20*%20FROM%20users" > /dev/null
+curl -s "http://localhost/user?id=1'%20AND%20'1'='1" > /dev/null
+
+3.	XSS-атаки
+curl -s "http://localhost/comment?text=<img%20src=x%20onerror=alert(1)>" > /dev/null
+curl -s "http://localhost/search?q=<body%20onload=alert('XSS')>" > /dev/null
+curl -s "http://localhost/profile?name=<ScRiPt>alert(1)</ScRiPt>" > /dev/null
+
+4.	Фишинг
+curl -s "http://localhost/redirect?url=http://FACEb00k.com/login" > /dev/null
+curl -s "http://localhost/redirect?url=http://g00gle.com" > /dev/null
+
+5.	Статические файлы (будут отфильтрованы)
+curl -s "http://localhost/style.css" > /dev/null
+curl -s "http://localhost/favicon.ico" > /dev/null
+
+6.	POST-запросы
+curl -s -X POST "http://localhost/login" -d "username=admin&password=12345" > /dev/null
+curl -s -X POST "http://localhost/login" -d "username=admin'--&password=anything" > /dev/null
